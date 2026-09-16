@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Kiểm tra Chương 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Style */
+        .section-header {
+            color: #1e3a8a;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-number {
+            color: #2563eb;
+            font-size: 1.25rem;
+        }
+
+        /* Container & Tables */
+        .table-container {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .custom-table th, .custom-table td {
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        /* Interactive Cell (Reveal) */
+        .reveal-cell {
+            position: relative;
+            cursor: pointer;
+            min-height: 80px;
+        }
+
+        .reveal-content {
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+            pointer-events: none;
+        }
+
+        .reveal-cell.revealed .reveal-content {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Overlay */
+        .reveal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #eff6ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s, transform 0.4s;
+            z-index: 10;
+        }
+
+        .reveal-cell:hover .reveal-overlay {
+            background-color: #dbeafe;
+        }
+
+        .reveal-cell.revealed .reveal-overlay {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .question-text {
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .row-header {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #334155;
+            width: 20%;
+            text-align: center;
+        }
+
+        /* pH Scale Styles */
+        .ph-scale-container { display: flex; flex-direction: column; width: 100%; margin-top: 10px; }
+        .ph-boxes { display: flex; height: 25px; width: 100%; border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
+        .ph-box { flex: 1; position: relative; }
+        .ph-1 { background-color: #ee2a2b; } .ph-2 { background-color: #f15a24; }
+        .ph-3 { background-color: #f7931e; } .ph-4 { background-color: #fbb03b; }
+        .ph-5 { background-color: #fcee21; } .ph-6 { background-color: #d9e021; }
+        .ph-7 { background-color: #8cc63f; } .ph-8 { background-color: #39b54a; }
+        .ph-9 { background-color: #00a99d; } .ph-10 { background-color: #29abe2; }
+        .ph-11 { background-color: #0071bc; } .ph-12 { background-color: #2e3192; }
+        .ph-13 { background-color: #662d91; } .ph-14 { background-color: #4a148c; }
+        .ph-labels { display: flex; justify-content: space-between; font-size: 12px; color: #4b5563; padding: 0 2px; }
+        .ph-label-item { flex: 1; text-align: center; }
+        .ph-arrows { position: relative; height: 20px; margin-top: 5px; border-bottom: 1px solid #1f2937; }
+        .ph-arrows::before { content: '◄'; position: absolute; left: -2px; bottom: -8px; font-size: 12px; }
+        .ph-arrows::after { content: '►'; position: absolute; right: -2px; bottom: -8px; font-size: 12px; }
+        .ph-regions { display: flex; justify-content: space-between; margin-top: -10px; }
+        .ph-region-text { background-color: white; padding: 0 10px; font-size: 14px; font-weight: 500; }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .quiz-section-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            margin-top: 2rem;
+        }
+        .question-block {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .question-content {
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.75rem;
+        }
+        
+        /* Multiple Choice Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        @media (min-width: 768px) {
+            .options-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-label:hover { background-color: #f9fafb; border-color: #9ca3af; }
+        .option-input { margin-top: 0.25rem; margin-right: 0.75rem; }
+        
+        .option-label.selected { background-color: #eff6ff; border-color: #3b82f6; }
+        .option-label.correct { background-color: #dcfce3; border-color: #22c55e; }
+        .option-label.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+
+        /* True/False Options */
+        .tf-grid {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+        }
+        .tf-statement { flex-grow: 1; font-size: 0.95rem; }
+        .tf-btn {
+            padding: 0.25rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+            background-color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .tf-btn.true-btn:hover { background-color: #dcfce3; border-color: #22c55e; color: #166534; }
+        .tf-btn.false-btn:hover { background-color: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        .tf-btn.selected-true { background-color: #22c55e; color: white; border-color: #22c55e; }
+        .tf-btn.selected-false { background-color: #ef4444; color: white; border-color: #ef4444; }
+        
+        /* Short Answer */
+        .short-answer-input {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            width: 100%;
+            max-width: 200px;
+            font-size: 1rem;
+        }
+        .short-answer-input:focus { outline: none; border-color: #3b82f6; ring: 2px; ring-color: #93c5fd; }
+        .short-answer-input.correct { border-color: #22c55e; background-color: #dcfce3; }
+        .short-answer-input.incorrect { border-color: #ef4444; background-color: #fee2e2; }
+        
+        #results-panel { display: none; }
+    </style>
+</head>
+<body class="pb-16">
+
+    <header class="bg-white border-b-4 border-red-500 shadow-sm pt-6 pb-4 mb-8">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <h1 class="text-4xl font-bold text-gray-800 tracking-wide uppercase mb-2" style="font-size: 2.5rem;">BÀI KIỂM TRA ĐÁNH GIÁ - CHƯƠNG 1</h1>
+            <p class="text-gray-600 font-medium" style="font-size: 1.25rem;">Thiết kế: Giáo viên Nguyễn Mạnh Hưng - Trường THPT Trại Cau</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 md:px-6">
+
+        <!-- BẢNG TỔNG KẾT KIẾN THỨC -->
+        <p class="text-center text-gray-500 italic mb-6">Nhấn vào các ô có nền xanh để xem câu trả lời ôn tập lý thuyết.</p>
+
+        <h2 class="section-header"><span class="section-number">1.</span> Cân bằng hoá học</h2>
+        <div class="table-container mb-12">
+            <table class="custom-table">
+                <tbody>
+                    <tr>
+                        <td colspan="2" class="w-1/2 p-0">
+                            <div class="reveal-cell" onclick="toggleCell(this)">
+                                <div class="reveal-overlay"><span class="question-text">❓ Phản ứng một chiều là gì?</span></div>
+                                <div class="reveal-content p-4 text-center">
+                                    <p class="font-semibold text-gray-700 italic mb-2">Phản ứng một chiều</p>
+                                    <p class="mb-2">\(aA + bB \longrightarrow cC + dD\)</p>
+                                    <p class="text-sm text-gray-600">Phản ứng chỉ xảy ra một chiều từ chất đầu tạo thành sản phẩm.</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td colspan="2" class="w-1/2 p-0">
+                            <div class="reveal-cell" onclick="toggleCell(this)">
+                                <div class="reveal-overlay"><span class="question-text">❓ Phản ứng thuận nghịch là gì?</span></div>
+                                <div class="reveal-content p-4 text-center">
+                                    <p class="font-semibold text-gray-700 italic mb-2">Phản ứng thuận nghịch</p>
+                                    <p class="mb-2">\(aA + bB \rightleftharpoons cC + dD\)</p>
+                                    <p class="text-sm text-gray-600">Trong cùng điều kiện, phản ứng xảy ra theo hai chiều trái ngược nhau.</p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Trạng thái cân bằng</td>
+                        <td colspan="3" class="p-0">
+                            <div class="reveal-cell" onclick="toggleCell(this)">
+                                <div class="reveal-overlay"><span class="question-text">❓ Đặc điểm của trạng thái cân bằng?</span></div>
+                                <div class="reveal-content p-4 text-center">
+                                    <p class="text-gray-800">\(v_{thuận} = v_{nghịch}\) ; nồng độ các chất trong hệ phản ứng không đổi.</p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Hằng số cân bằng</td>
+                        <td colspan="3" class="p-0">
+                            <div class="reveal-cell" onclick="toggleCell(this)">
+                                <div class="reveal-overlay"><span class="question-text">❓ Biểu thức và ý nghĩa của hằng số cân bằng \(K_C\)?</span></div>
+                                <div class="reveal-content p-5 bg-[#e8eaf6]">
+                                    <div class="text-center mb-3">\(K_C = \frac{[C]^c[D]^d}{[A]^a[B]^b}\)</div>
+                                    <ul class="list-none space-y-2 text-sm text-gray-700 max-w-2xl mx-auto">
+                                        <li>• Trong đó: [A], [B], [C], [D] là nồng độ mol của các chất ở trạng thái cân bằng.</li>
+                                        <li>• Chất rắn không đưa vào biểu thức tính \(K_C\).</li>
+                                        <li>• \(K_C\) chỉ phụ thuộc vào bản chất của phản ứng và nhiệt độ.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Các yếu tố ảnh hưởng</td>
+                        <td colspan="3" class="p-0">
+                            <div class="reveal-cell" onclick="toggleCell(this)">
+                                <div class="reveal-overlay"><span class="question-text">❓ Các yếu tố ảnh hưởng đến cân bằng?</span></div>
+                                <div class="reveal-content p-4 text-center">
+                                    <p class="font-medium text-gray-800">Nhiệt độ, nồng độ, áp suất.</p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">Nguyên lí Le Chatelier</td>
+                        <td colspan="3" class="p-0">
+                            <div class="reveal-cell" onclick="toggleCell(this)">
+                                <div class="reveal-overlay"><span class="question-text">❓ Phát biểu nguyên lí chuyển dịch cân bằng?</span></div>
+                                <div class="reveal-content p-4 text-sm text-gray-700 leading-relaxed bg-[#f1f8e9]">
+                                    Một phản ứng thuận nghịch đang ở trạng thái cân bằng, khi chịu một tác động bên ngoài như biến đổi nhiệt độ, nồng độ, áp suất thì cân bằng sẽ chuyển dịch theo chiều làm giảm tác động bên ngoài đó.
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-header"><span class="section-number">2.</span> Cân bằng trong dung dịch nước</h2>
+        <div class="table-container mb-4">
+            <table class="custom-table">
+                <tbody>
+                    <tr>
+                        <td class="w-1/2 p-0 align-top">
+                            <div class="reveal-cell h-full" onclick="toggleCell(this)">
+                                <div class="reveal-overlay"><span class="question-text">❓ Sự điện li là gì? Phân loại?</span></div>
+                                <div class="reveal-content p-5">
+                                    <p class="font-semibold text-center italic mb-3">Sự điện li</p>
+                                    <ul class="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                                        <li>Quá trình phân li các chất trong nước tạo thành ion.</li>
+                                        <li><strong>Chất điện li mạnh:</strong> acid mạnh, base mạnh, hầu hết muối.</li>
+                                        <li><strong>Chất điện li yếu:</strong> acid yếu, base yếu.</li>
+                                        <li><strong>Chất không điện li:</strong> nước, saccharose, ethanol,...</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="w-1/2 p-0 align-top">
+                            <div class="reveal-cell h-full" onclick="toggleCell(this)">
+                                <div class="reveal-overlay"><span class="question-text">❓ Thuyết Acid - Base Brønsted - Lowry?</span></div>
+                                <div class="reveal-content p-5">
+                                    <p class="font-semibold text-center italic mb-3">Thuyết Brønsted - Lowry</p>
+                                    <ul class="list-disc pl-5 space-y-1 text-sm text-gray-700">
+                                        <li><strong>Acid</strong> là chất cho proton (H⁺).</li>
+                                        <li><strong>Base</strong> là chất nhận proton (H⁺).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="p-0">
+                            <div class="reveal-cell" onclick="toggleCell(this)">
+                                <div class="reveal-overlay"><span class="question-text">❓ Công thức tính pH và thang pH?</span></div>
+                                <div class="reveal-content p-6 bg-[#f8fbff]">
+                                    <div class="text-center w-full mb-4">
+                                        <p class="font-bold text-gray-800 mb-1">pH = -lg[H⁺] hoặc [H⁺] = 10⁻ᵖᴴ</p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sm font-semibold text-gray-700 w-10">pH</span>
+                                        <div class="ph-scale-container">
+                                            <div class="ph-boxes">
+                                                <div class="ph-box ph-1"></div><div class="ph-box ph-2"></div><div class="ph-box ph-3"></div><div class="ph-box ph-4"></div><div class="ph-box ph-5"></div><div class="ph-box ph-6"></div><div class="ph-box ph-7 relative"><div class="absolute w-0.5 h-8 bg-black -top-1 left-1/2 -translate-x-1/2 z-10"></div></div><div class="ph-box ph-8"></div><div class="ph-box ph-9"></div><div class="ph-box ph-10"></div><div class="ph-box ph-11"></div><div class="ph-box ph-12"></div><div class="ph-box ph-13"></div><div class="ph-box ph-14"></div>
+                                            </div>
+                                            <div class="ph-regions">
+                                                <span class="ph-region-text text-[#c62828] ml-16">acid</span>
+                                                <span class="ph-region-text text-gray-800">trung tính</span>
+                                                <span class="ph-region-text text-[#1565c0] mr-16">base</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="text-right mb-12">
+            <button onclick="revealAll()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow transition-colors text-sm">Mở tất cả đáp án</button>
+            <button onclick="hideAll()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded shadow transition-colors text-sm ml-2">Che lại tất cả</button>
+        </div>
+
+        <!-- BÀI TẬP TRẮC NGHIỆM -->
+        <h2 class="section-header mt-16 border-t-2 pt-8 border-blue-200">
+            <span class="text-2xl mr-2">📝</span> ĐỀ KIỂM TRA: CÂN BẰNG HÓA HỌC
+        </h2>
+        <p class="text-gray-600 mb-6 font-medium text-center">Cấu trúc định dạng mới - Bộ GD&ĐT: Trắc nghiệm lựa chọn, Đúng/Sai & Trả lời ngắn</p>
+
+        <div class="quiz-container" id="quiz-form">
+            
+            <!-- PHẦN I: NHIỀU LỰA CHỌN -->
+            <div class="quiz-section-title text-blue-800">PHẦN I. CÂU HỎI TRẮC NGHIỆM NHIỀU LỰA CHỌN (3,0 điểm - Mỗi câu đúng 0,25 điểm)</div>
+            <p class="text-sm text-gray-500 mb-4 italic">Thí sinh chọn một phương án đúng nhất.</p>
+
+            <!-- Câu 1 -->
+            <div class="question-block" data-type="mcq" data-answer="B">
+                <div class="question-content">
+                    <span class="font-bold">Câu 1 (NB):</span> Phản ứng thuận nghịch là phản ứng
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q1" value="A" class="option-input">
+                        <span>A. chỉ xảy ra theo một chiều từ chất tham gia tạo thành chất sản phẩm.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q1" value="B" class="option-input">
+                        <span>B. xảy ra đồng thời theo hai chiều ngược nhau trong cùng điều kiện xác định.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q1" value="C" class="option-input">
+                        <span>C. có hiệu suất phản ứng luôn đạt 100% khi thời gian phản ứng đủ dài.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q1" value="D" class="option-input">
+                        <span>D. dừng lại hoàn toàn khi hệ phản ứng đạt trạng thái cân bằng.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 2 -->
+            <div class="question-block" data-type="mcq" data-answer="C">
+                <div class="question-content">
+                    <span class="font-bold">Câu 2 (NB):</span> Cho phản ứng thuận nghịch tổng quát: \(aA + bB \rightleftharpoons cC + dD\). Biểu thức tính hằng số cân bằng \(K_C\) của phản ứng ở trạng thái cân bằng là
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q2" value="A" class="option-input">
+                        <span>A. \(K_C = \frac{[A]^a \cdot [B]^b}{[C]^c \cdot [D]^d}\)</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q2" value="B" class="option-input">
+                        <span>B. \(K_C = \frac{[C] \cdot [D]}{[A] \cdot [B]}\)</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q2" value="C" class="option-input">
+                        <span>C. \(K_C = \frac{[C]^c \cdot [D]^d}{[A]^a \cdot [B]^b}\)</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q2" value="D" class="option-input">
+                        <span>D. \(K_C = \frac{c[C] \cdot d[D]}{a[A] \cdot b[B]}\)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 3 -->
+            <div class="question-block" data-type="mcq" data-answer="A">
+                <div class="question-content">
+                    <span class="font-bold">Câu 3 (NB):</span> Theo thuyết Brønsted – Lowry về acid – base, acid là chất
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q3" value="A" class="option-input">
+                        <span>A. có khả năng cho proton (\(H^+\)).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q3" value="B" class="option-input">
+                        <span>B. có khả năng nhận proton (\(H^+\)).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q3" value="C" class="option-input">
+                        <span>C. phân li hoàn toàn ra ion \(OH^-\) trong dung dịch nước.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q3" value="D" class="option-input">
+                        <span>D. làm quỳ tím chuyển sang màu xanh.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 4 -->
+            <div class="question-block" data-type="mcq" data-answer="B">
+                <div class="question-content">
+                    <span class="font-bold">Câu 4 (NB):</span> Dung dịch chất nào sau đây làm quỳ tím chuyển sang màu đỏ?
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q4" value="A" class="option-input"><span>A. NaOH 0,1 M.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q4" value="B" class="option-input"><span>B. HCl 0,1 M.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q4" value="C" class="option-input"><span>C. NaCl 0,1 M.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q4" value="D" class="option-input"><span>D. \(Ba(OH)_2\) 0,1 M.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 5 -->
+            <div class="question-block" data-type="mcq" data-answer="C">
+                <div class="question-content">
+                    <span class="font-bold">Câu 5 (TH):</span> Cho cân bằng hoá học sau trong bình kín: \(N_2(g) + 3H_2(g) \rightleftharpoons 2NH_3(g) \quad \Delta_r H^0_{298} = -92\text{ kJ}\). Yếu tố nào sau đây làm cân bằng chuyển dịch theo chiều thuận?
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q5" value="A" class="option-input">
+                        <span>A. Giảm áp suất chung của hệ phản ứng.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q5" value="B" class="option-input">
+                        <span>B. Tăng nhiệt độ của hệ phản ứng.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q5" value="C" class="option-input">
+                        <span>C. Tăng nồng độ của khí \(N_2\) hoặc \(H_2\).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q5" value="D" class="option-input">
+                        <span>D. Thêm chất xúc tác bột sắt (Fe).</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 6 -->
+            <div class="question-block" data-type="mcq" data-answer="B">
+                <div class="question-content">
+                    <span class="font-bold">Câu 6 (TH):</span> Dung dịch chất nào sau đây là chất điện li yếu?
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q6" value="A" class="option-input"><span>A. \(HNO_3\).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q6" value="B" class="option-input"><span>B. \(CH_3COOH\).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q6" value="C" class="option-input"><span>C. KOH.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q6" value="D" class="option-input"><span>D. \(K_2SO_4\).</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 7 -->
+            <div class="question-block" data-type="mcq" data-answer="C">
+                <div class="question-content">
+                    <span class="font-bold">Câu 7 (TH):</span> Cho phản ứng: \(CH_3COOH + H_2O \rightleftharpoons CH_3COO^- + H_3O^+\). Trong phản ứng thuận, hai chất đóng vai trò là acid theo thuyết Brønsted – Lowry là
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q7" value="A" class="option-input"><span>A. \(CH_3COOH\) và \(H_2O\).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q7" value="B" class="option-input"><span>B. \(CH_3COO^-\) và \(H_3O^+\).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q7" value="C" class="option-input"><span>C. \(CH_3COOH\) và \(H_3O^+\).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q7" value="D" class="option-input"><span>D. \(H_2O\) và \(CH_3COO^-\).</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 8 -->
+            <div class="question-block" data-type="mcq" data-answer="B">
+                <div class="question-content">
+                    <span class="font-bold">Câu 8 (TH):</span> Trộn 100 mL dung dịch HCl 0,10 M với 100 mL dung dịch NaOH 0,10 M thu được dung dịch X. Giá trị pH của dung dịch X ở 25°C là
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q8" value="A" class="option-input"><span>A. 1.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q8" value="B" class="option-input"><span>B. 7.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q8" value="C" class="option-input"><span>C. 13.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q8" value="D" class="option-input"><span>D. 14.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 9 -->
+            <div class="question-block" data-type="mcq" data-answer="A">
+                <div class="question-content">
+                    <span class="font-bold">Câu 9 (TH):</span> Trong phương pháp chuẩn độ acid – base bằng dung dịch NaOH chuẩn với chất chỉ thị phenolphthalein, điểm tương đương đạt được khi dung dịch trong bình tam giác chuyển từ
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q9" value="A" class="option-input">
+                        <span>A. không màu sang xuất hiện màu hồng nhạt bền vững (khoảng 10 giây).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q9" value="B" class="option-input">
+                        <span>B. màu hồng đậm sang không màu hoàn toàn.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q9" value="C" class="option-input">
+                        <span>C. màu vàng chanh sang màu đỏ gạch.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q9" value="D" class="option-input">
+                        <span>D. màu xanh lục sang màu da cam nhạt.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 10 -->
+            <div class="question-block" data-type="mcq" data-answer="A">
+                <div class="question-content">
+                    <span class="font-bold">Câu 10 (VD):</span> Ở nhiệt độ t°C, hằng số cân bằng \(K_C\) của phản ứng \(H_2(g) + I_2(g) \rightleftharpoons 2HI(g)\) có giá trị bằng 64. Biết nồng độ cân bằng của \(H_2\) và \(I_2\) đều bằng 0,10 M. Nồng độ cân bằng của HI tại nhiệt độ đó là
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q10" value="A" class="option-input"><span>A. 0,80 M.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q10" value="B" class="option-input"><span>B. 6,40 M.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q10" value="C" class="option-input"><span>C. 0,64 M.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q10" value="D" class="option-input"><span>D. 1,60 M.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 11 -->
+            <div class="question-block" data-type="mcq" data-answer="D">
+                <div class="question-content">
+                    <span class="font-bold">Câu 11 (VD):</span> Hòa tan hoàn toàn 0,40 gram NaOH khan vào nước thu được 100 mL dung dịch Y. Giá trị pH của dung dịch Y ở 25°C là
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q11" value="A" class="option-input"><span>A. 1.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q11" value="B" class="option-input"><span>B. 2.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q11" value="C" class="option-input"><span>C. 12.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q11" value="D" class="option-input"><span>D. 13.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Câu 12 -->
+            <div class="question-block" data-type="mcq" data-answer="B">
+                <div class="question-content">
+                    <span class="font-bold">Câu 12 (VD):</span> Ion \(Fe^{3+}\) trong nước bị thủy phân theo phương trình: \(Fe^{3+} + 3H_2O \rightleftharpoons Fe(OH)_3 + 3H^+\). Để hạn chế sự thủy phân của ion \(Fe^{3+}\) trong dung dịch muối sắt(III) chloride, người ta nên thêm vào dung dịch một lượng nhỏ chất nào sau đây?
+                </div>
+                <div class="options-grid">
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q12" value="A" class="option-input"><span>A. Dung dịch NaOH.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q12" value="B" class="option-input"><span>B. Dung dịch HCl.</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q12" value="C" class="option-input"><span>C. Dung dịch \(Na_2CO_3\).</span>
+                    </label>
+                    <label class="option-label" onclick="selectMCQ(this)">
+                        <input type="radio" name="q12" value="D" class="option-input"><span>D. Nước cất.</span>
+                    </label>
+                </div>
+            </div>
+
+
+            <!-- PHẦN II: ĐÚNG SAI -->
+            <div class="quiz-section-title text-blue-800 mt-10">PHẦN II. CÂU HỎI TRẮC NGHIỆM ĐÚNG / SAI (4,0 điểm - Mỗi câu 2,0 điểm)</div>
+            <p class="text-sm text-gray-500 mb-4 italic">Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn Đúng hoặc Sai.</p>
+
+            <!-- Câu ĐS 1 -->
+            <div class="question-block" data-type="tf" id="tf1">
+                <div class="question-content">
+                    <span class="font-bold">Câu 1:</span> Xét phản ứng tổng hợp ammonia trong công nghiệp diễn ra trong bình kín: <br>
+                    \(N_2(g) + 3H_2(g) \rightleftharpoons 2NH_3(g) \quad \Delta_r H^0_{298} = -92\text{ kJ}\)
+                </div>
+                
+                <div class="tf-grid" data-id="1a" data-answer="true">
+                    <div class="font-medium mr-2">a)</div>
+                    <div class="tf-statement">[NB] Phản ứng tổng hợp \(NH_3\) là phản ứng tỏa nhiệt.</div>
+                    <button class="tf-btn true-btn" onclick="selectTF(this, true)">Đúng</button>
+                    <button class="tf-btn false-btn" onclick="selectTF(this, false)">Sai</button>
+                </div>
+                <div class="tf-grid" data-id="1b" data-answer="false">
+                    <div class="font-medium mr-2">b)</div>
+                    <div class="tf-statement">[NB] Khi hệ đạt trạng thái cân bằng, các phản ứng dừng lại hoàn toàn và nồng độ chất tham gia bằng nồng độ sản phẩm.</div>
+                    <button class="tf-btn true-btn" onclick="selectTF(this, true)">Đúng</button>
+                    <button class="tf-btn false-btn" onclick="selectTF(this, false)">Sai</button>
+                </div>
+                <div class="tf-grid" data-id="1c" data-answer="true">
+                    <div class="font-medium mr-2">c)</div>
+                    <div class="tf-statement">[TH] Khi tăng áp suất chung của hệ phản ứng, cân bằng sẽ chuyển dịch theo chiều thuận.</div>
+                    <button class="tf-btn true-btn" onclick="selectTF(this, true)">Đúng</button>
+                    <button class="tf-btn false-btn" onclick="selectTF(this, false)">Sai</button>
+                </div>
+                <div class="tf-grid" data-id="1d" data-answer="false">
+                    <div class="font-medium mr-2">d)</div>
+                    <div class="tf-statement">[VD] Để thu được hiệu suất cao nhất trong thực tế, người ta tiến hành phản ứng ở nhiệt độ cực thấp (0°C).</div>
+                    <button class="tf-btn true-btn" onclick="selectTF(this, true)">Đúng</button>
+                    <button class="tf-btn false-btn" onclick="selectTF(this, false)">Sai</button>
+                </div>
+            </div>
+
+            <!-- Câu ĐS 2 -->
+            <div class="question-block" data-type="tf" id="tf2">
+                <div class="question-content">
+                    <span class="font-bold">Câu 2:</span> Tiến hành thí nghiệm chuẩn độ dung dịch HCl chưa biết nồng độ bằng dung dịch chuẩn NaOH 0,10 M với chất chỉ thị phenolphthalein. Dùng pipet lấy chính xác 10,0 mL dung dịch HCl cho vào bình tam giác, thêm 1-2 giọt phenolphthalein.
+                </div>
+                
+                <div class="tf-grid" data-id="2a" data-answer="true">
+                    <div class="font-medium mr-2">a)</div>
+                    <div class="tf-statement">[NB] Dung dịch HCl ban đầu trong bình tam giác làm chất chỉ thị phenolphthalein không đổi màu.</div>
+                    <button class="tf-btn true-btn" onclick="selectTF(this, true)">Đúng</button>
+                    <button class="tf-btn false-btn" onclick="selectTF(this, false)">Sai</button>
+                </div>
+                <div class="tf-grid" data-id="2b" data-answer="true">
+                    <div class="font-medium mr-2">b)</div>
+                    <div class="tf-statement">[NB] Dung dịch chuẩn NaOH được đựng trên buret và nhỏ từ từ từng giọt xuống bình tam giác.</div>
+                    <button class="tf-btn true-btn" onclick="selectTF(this, true)">Đúng</button>
+                    <button class="tf-btn false-btn" onclick="selectTF(this, false)">Sai</button>
+                </div>
+                <div class="tf-grid" data-id="2c" data-answer="true">
+                    <div class="font-medium mr-2">c)</div>
+                    <div class="tf-statement">[TH] Tại điểm tương đương, dung dịch trong bình tam giác chuyển sang màu hồng nhạt bền vững trong khoảng 10 giây.</div>
+                    <button class="tf-btn true-btn" onclick="selectTF(this, true)">Đúng</button>
+                    <button class="tf-btn false-btn" onclick="selectTF(this, false)">Sai</button>
+                </div>
+                <div class="tf-grid" data-id="2d" data-answer="false">
+                    <div class="font-medium mr-2">d)</div>
+                    <div class="tf-statement">[VD] Nếu thể tích dung dịch NaOH 0,10 M tiêu tốn trung bình qua 3 lần chuẩn độ là 12,50 mL thì nồng độ mol của dung dịch HCl ban đầu là 0,15 M.</div>
+                    <button class="tf-btn true-btn" onclick="selectTF(this, true)">Đúng</button>
+                    <button class="tf-btn false-btn" onclick="selectTF(this, false)">Sai</button>
+                </div>
+            </div>
+
+            <!-- PHẦN III: TRẢ LỜI NGẮN -->
+            <div class="quiz-section-title text-blue-800 mt-10">PHẦN III. CÂU HỎI TRẢ LỜI NGẮN (3,0 điểm - Mỗi câu đúng 0,5 điểm)</div>
+            <p class="text-sm text-gray-500 mb-4 italic">Thí sinh nhập đáp án dạng số vào ô trống.</p>
+
+            <!-- Câu TLN 1 -->
+            <div class="question-block" data-type="sa" data-answer="3">
+                <div class="question-content">
+                    <span class="font-bold">Câu 1 (TH):</span> Cho dãy các chất sau: HCl, NaOH, \(CH_3COOH\), \(K_2SO_4\), \(C_2H_5OH\), \(C_{12}H_{22}O_{11}\). Có bao nhiêu chất trong dãy thuộc loại chất điện li mạnh?
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-medium text-gray-700">Trả lời:</span>
+                    <input type="text" class="short-answer-input" placeholder="Nhập số...">
+                </div>
+            </div>
+
+            <!-- Câu TLN 2 -->
+            <div class="question-block" data-type="sa" data-answer="5">
+                <div class="question-content">
+                    <span class="font-bold">Câu 2 (TH):</span> Ở 25°C, một mẫu nước mưa thu được tại vùng trung tâm công nghiệp Thái Nguyên có nồng độ ion \(H^+\) bằng \(1,0 \times 10^{-5}\text{ M}\). Tính giá trị pH của mẫu nước mưa trên.
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-medium text-gray-700">Trả lời:</span>
+                    <input type="text" class="short-answer-input" placeholder="Nhập số...">
+                </div>
+            </div>
+
+            <!-- Câu TLN 3 -->
+            <div class="question-block" data-type="sa" data-answer="64">
+                <div class="question-content">
+                    <span class="font-bold">Câu 3 (VD):</span> Cho 0,10 mol khí \(H_2\) và 0,10 mol khí \(I_2\) vào bình kín dung tích 1,0 lít ở 445°C. Phản ứng xảy ra: \(H_2(g) + I_2(g) \rightleftharpoons 2HI(g)\). Khi hệ đạt trạng thái cân bằng, nồng độ của HI đo được là 0,16 M. Tính giá trị hằng số cân bằng \(K_C\) của phản ứng.
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-medium text-gray-700">Trả lời:</span>
+                    <input type="text" class="short-answer-input" placeholder="Nhập số...">
+                </div>
+            </div>
+
+            <!-- Câu TLN 4 -->
+            <div class="question-block" data-type="sa" data-answer="1">
+                <div class="question-content">
+                    <span class="font-bold">Câu 4 (VD):</span> Trộn 100 mL dung dịch HCl 0,05 M với 100 mL dung dịch HCl 0,15 M thu được 200 mL dung dịch A. Tính giá trị pH của dung dịch A (coi HCl điện li hoàn toàn).
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-medium text-gray-700">Trả lời:</span>
+                    <input type="text" class="short-answer-input" placeholder="Nhập số...">
+                </div>
+            </div>
+
+            <!-- Câu TLN 5 -->
+            <div class="question-block" data-type="sa" data-answer="0.15">
+                <div class="question-content">
+                    <span class="font-bold">Câu 5 (VD):</span> Chuẩn độ 10,0 mL dung dịch \(CH_3COOH\) chưa biết nồng độ bằng dung dịch NaOH 0,10 M với chất chỉ thị phenolphthalein. Thể tích dung dịch NaOH tiêu tốn trung bình qua 3 lần chuẩn độ là 15,0 mL. Tính nồng độ mol (M) của dung dịch \(CH_3COOH\) ban đầu.
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-medium text-gray-700">Trả lời:</span>
+                    <input type="text" class="short-answer-input" placeholder="Nhập số (VD: 0.15)...">
+                </div>
+            </div>
+
+            <!-- Câu TLN 6 -->
+            <div class="question-block" data-type="sa" data-answer="12">
+                <div class="question-content">
+                    <span class="font-bold">Câu 6 (VD):</span> Ở 25°C, hòa tan hoàn toàn 0,56 gram KOH tinh khiết vào nước cất thu được 1,0 lít dung dịch B. Tính giá trị pH của dung dịch B (biết \(M_{KOH} = 56\text{ g/mol}\), tích số ion của nước \(K_w = 10^{-14}\)).
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-medium text-gray-700">Trả lời:</span>
+                    <input type="text" class="short-answer-input" placeholder="Nhập số...">
+                </div>
+            </div>
+
+            <!-- Nút Nộp Bài -->
+            <div class="mt-8 text-center border-t-2 pt-6">
+                <button id="submit-quiz-btn" onclick="submitQuiz()" class="px-8 py-3 bg-red-600 hover:bg-red-700 text-white text-lg font-bold rounded-lg shadow-lg transition-transform transform active:scale-95">
+                    ✅ NỘP BÀI KIỂM TRA
+                </button>
+            </div>
+
+            <!-- Kết quả -->
+            <div id="results-panel" class="mt-8 p-6 bg-blue-50 border-2 border-blue-200 rounded-lg text-center">
+                <h3 class="text-2xl font-bold text-blue-800 mb-2">ĐIỂM SỐ CỦA BẠN</h3>
+                <div class="text-4xl font-black text-blue-600 mb-4" id="score-display">0.00 / 10.00</div>
+                <p class="text-gray-700 font-medium mb-4" id="feedback-text">Đã ghi nhận kết quả!</p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // Các hàm cho Bảng tổng kết
+        function toggleCell(element) { element.classList.toggle('revealed'); }
+        function revealAll() { document.querySelectorAll('.reveal-cell').forEach(cell => cell.classList.add('revealed')); }
+        function hideAll() { document.querySelectorAll('.reveal-cell').forEach(cell => cell.classList.remove('revealed')); }
+
+        // Logic UI Trắc nghiệm
+        function selectMCQ(labelEl) {
+            if (document.getElementById('results-panel').style.display === 'block') return; // Đã nộp bài
+            let name = labelEl.querySelector('input').name;
+            let options = document.querySelectorAll(`input[name="${name}"]`);
+            options.forEach(opt => opt.closest('.option-label').classList.remove('selected'));
+            labelEl.classList.add('selected');
+            labelEl.querySelector('input').checked = true;
+        }
+
+        function selectTF(btnEl, isTrue) {
+            if (document.getElementById('results-panel').style.display === 'block') return; // Đã nộp bài
+            let container = btnEl.closest('.tf-grid');
+            let trueBtn = container.querySelector('.true-btn');
+            let falseBtn = container.querySelector('.false-btn');
+            
+            trueBtn.classList.remove('selected-true');
+            falseBtn.classList.remove('selected-false');
+            
+            if (isTrue) {
+                trueBtn.classList.add('selected-true');
+                container.dataset.user = "true";
+            } else {
+                falseBtn.classList.add('selected-false');
+                container.dataset.user = "false";
+            }
+        }
+
+        // Logic Chấm điểm - BẢN KIỂM TRA (KHÔNG LỘ ĐÁP ÁN ĐÚNG)
+        function submitQuiz() {
+            let totalScore = 0;
+            
+            // 1. Chấm Phần I (Nhiều lựa chọn) - 0.25đ / câu
+            let mcqBlocks = document.querySelectorAll('.question-block[data-type="mcq"]');
+            mcqBlocks.forEach(block => {
+                let correctAnswer = block.dataset.answer;
+                let selectedInput = block.querySelector('input:checked');
+                
+                if (selectedInput) {
+                    if (selectedInput.value === correctAnswer) {
+                        totalScore += 0.25;
+                        selectedInput.closest('.option-label').classList.add('correct');
+                    } else {
+                        // Chỉ tô đỏ lựa chọn sai của học sinh, không hiện đáp án đúng
+                        selectedInput.closest('.option-label').classList.add('incorrect');
+                    }
+                }
+            });
+
+            // 2. Chấm Phần II (Đúng/Sai) - Chấm theo cụm 4 ý
+            let tfBlocks = document.querySelectorAll('.question-block[data-type="tf"]');
+            tfBlocks.forEach(block => {
+                let correctCount = 0;
+                let rows = block.querySelectorAll('.tf-grid');
+                
+                rows.forEach(row => {
+                    let correctAns = row.dataset.answer;
+                    let userAns = row.dataset.user;
+                    
+                    let trueBtn = row.querySelector('.true-btn');
+                    let falseBtn = row.querySelector('.false-btn');
+                    
+                    if (userAns === correctAns) {
+                        correctCount++;
+                        // Tô xanh viền câu học sinh làm đúng
+                        if(userAns === 'true') trueBtn.style.border = "2px solid #22c55e";
+                        if(userAns === 'false') falseBtn.style.border = "2px solid #22c55e";
+                    } else if (userAns) {
+                        // Tô đỏ viền lựa chọn sai của học sinh, không chỉ ra nút đúng
+                        if(userAns === 'true') trueBtn.style.border = "2px solid #ef4444";
+                        if(userAns === 'false') falseBtn.style.border = "2px solid #ef4444";
+                    }
+                });
+
+                // Tính điểm theo barem 4 điểm cho 2 câu (mỗi câu 2 điểm)
+                if (correctCount === 1) totalScore += 0.2;
+                else if (correctCount === 2) totalScore += 0.5;
+                else if (correctCount === 3) totalScore += 1.0;
+                else if (correctCount === 4) totalScore += 2.0;
+            });
+
+            // 3. Chấm Phần III (Trả lời ngắn) - 0.5đ / câu
+            let saBlocks = document.querySelectorAll('.question-block[data-type="sa"]');
+            saBlocks.forEach(block => {
+                let correctAnswer = block.dataset.answer.trim().toLowerCase();
+                let input = block.querySelector('input');
+                let userAnswer = input.value.trim().toLowerCase();
+                
+                // Replace comma with dot for decimals just in case
+                userAnswer = userAnswer.replace(',', '.');
+                let correctAlt = correctAnswer.replace(',', '.');
+
+                input.classList.remove('correct', 'incorrect');
+                
+                // Allow exact match or matching decimal (e.g. 5 or 5.0)
+                if (userAnswer === correctAlt || parseFloat(userAnswer) === parseFloat(correctAlt)) {
+                    totalScore += 0.5;
+                    input.classList.add('correct');
+                } else if (userAnswer !== "") {
+                    // Tô đỏ khung nhập nếu sai, không điền thêm đáp án đúng vào
+                    input.classList.add('incorrect');
+                }
+                
+                // Khóa input sau khi nộp
+                input.readOnly = true;
+            });
+
+            // Hiển thị kết quả (10.0 điểm)
+            // Phần 1: 12 * 0.25 = 3đ | Phần 2: 2 * 2.0 = 4đ | Phần 3: 6 * 0.5 = 3đ. Tổng = 10đ
+            let maxMiniScore = 10.0;
+            
+            document.getElementById('score-display').innerText = `${totalScore.toFixed(2)} / ${maxMiniScore.toFixed(2)} điểm`;
+            
+            let feedback = "Đã ghi nhận kết quả bài làm của bạn.";
+            document.getElementById('feedback-text').innerText = feedback;
+
+            document.getElementById('results-panel').style.display = 'block';
+            document.getElementById('submit-quiz-btn').disabled = true;
+            document.getElementById('submit-quiz-btn').classList.replace('bg-red-600', 'bg-gray-400');
+            document.getElementById('submit-quiz-btn').innerText = "ĐÃ CHẤM ĐIỂM";
+            
+            // Cuộn mượt xuống phần điểm số
+            document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
